@@ -1,6 +1,10 @@
 package goorm.goormspring1.post;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +28,9 @@ public class PostController {
 
     // 게시글 목록 (기본)
     @GetMapping("/posts")
-    public String list(Model model) {
-        List<Post> posts = postService.findAll();
+    public String list(@PageableDefault(size = 10, sort = "seq", direction = Sort.Direction.DESC)
+                       Pageable pageable, Model model) {
+        Page<Post> posts = postService.findAll(pageable);
         model.addAttribute("posts", posts);
         return "post/list";
     }
