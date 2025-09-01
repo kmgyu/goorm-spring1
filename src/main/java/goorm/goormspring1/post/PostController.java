@@ -40,14 +40,14 @@ public class PostController {
     public String show(@PathVariable Long seq, Model model) {
         Post post = postService.findBySeq(seq);
         model.addAttribute("post", post);
-        return "post/show";
+        return "post/detail";
     }
 
     // 게시글 작성 폼
     @GetMapping("/posts/new")
     public String createForm(Model model) {
         model.addAttribute("post", new Post());
-        return "post/form";
+        return "post/write";
     }
 
     // 게시글 저장 → 목록으로
@@ -62,7 +62,7 @@ public class PostController {
     public String editForm(@PathVariable Long seq, Model model) {
         Post post = postService.findBySeq(seq);
         model.addAttribute("post", post);
-        return "post/form";
+        return "post/write";
     }
 
     // 게시글 수정 → 상세보기로
