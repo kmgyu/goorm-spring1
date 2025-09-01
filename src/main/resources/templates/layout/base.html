@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:fragment="layout (title, content)">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:replace="${title}">Goorm Board</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen bg-gray-50 text-gray-800">
+<!-- HEADER -->
+<div th:replace="layout/header :: header"></div>
+
+<!-- PAGE CONTENT -->
+<main class="flex-1">
+    <th:block th:replace="${content}">내용</th:block>
+</main>
+
+<!-- FOOTER -->
+<div th:replace="layout/footer :: footer"></div>
+</body>
+</html>
