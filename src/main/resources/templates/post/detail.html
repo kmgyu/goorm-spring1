@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout (~{::title}, ~{::section})}">
+<head>
+    <title>Goorm Board - 글 상세</title>
+</head>
+<body>
+<section class="max-w-3xl mx-auto px-4 py-12">
+    <!-- 성공 메시지 -->
+    <div th:if="${message}" class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+        <span th:text="${message}"></span>
+    </div>
+
+    <article class="bg-white p-6 rounded shadow">
+        <h1 class="text-2xl font-bold mb-2" th:text="${post.title}">제목</h1>
+        <div class="text-sm text-gray-500 mb-4">
+            작성자: <span th:text="${post.author}">작성자</span> ·
+            작성일: <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01 12:00</span>
+        </div>
+        <div class="prose max-w-none" style="white-space: pre-line;" th:text="${post.content}">
+            게시글 내용이 여기에 표시됩니다.
+        </div>
+    </article>
+
+    <div class="mt-6 flex justify-between">
+        <a href="/posts" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm">목록</a>
+        <div class="space-x-2">
+            <a th:href="@{/posts/{seq}/edit(seq=${post.seq})}"
+               class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">수정</a>
+            <form th:action="@{/posts/{seq}/delete(seq=${post.seq})}" method="post" style="display:inline;">
+                <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+                        onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>
