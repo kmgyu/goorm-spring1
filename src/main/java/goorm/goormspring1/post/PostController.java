@@ -64,7 +64,7 @@ public class PostController {
     }
 
     // 게시글 수정 → 상세보기로
-    @PostMapping("/{seq}")
+    @PutMapping("/{seq}")
     public String update(@PathVariable Long seq, @ModelAttribute Post post) {
         postService.update(seq, post);
         return "redirect:/posts/" + seq;
