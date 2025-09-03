@@ -1,5 +1,6 @@
 package goorm.goormspring1.post;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,7 +52,11 @@ public class PostController {
 
     // 게시글 저장 → 목록으로
     @PostMapping
-    public String create(@ModelAttribute Post post) {
+    public String create(@Valid @ModelAttribute("post") Post post,
+                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "post/write";
+        }
         postService.save(post);
         return "redirect:/posts";
     }
@@ -65,7 +71,11 @@ public class PostController {
 
     // 게시글 수정 → 상세보기로
     @PutMapping("/{seq}")
-    public String update(@PathVariable Long seq, @ModelAttribute Post post) {
+    public String update(@PathVariable Long seq, @Valid @ModelAttribute("post") Post post, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            post.setSeq(seq);
+            return "post/write";
+        }
         postService.update(seq, post);
         return "redirect:/posts/" + seq;
     }

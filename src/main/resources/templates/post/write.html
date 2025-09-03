@@ -6,26 +6,58 @@
 </head>
 <body>
 <section class="max-w-3xl mx-auto px-4 py-12">
+
     <form th:action="${post != null and post.seq != null} ? @{/posts/{seq}(seq=${post.seq})} : @{/posts}"
-          th:method="${post.seq != null ? 'put' : 'post'}" class="bg-white p-6 rounded shadow space-y-6">
+          th:method="${post.seq != null ? 'put' : 'post'}" class="bg-white p-6 rounded shadow space-y-6"
+          th:object="${post}">
         <h1 class="text-2xl font-bold" th:text="${post != null and post.seq != null} ? '글 수정' : '글쓰기'">글쓰기</h1>
+
+        <!-- 전체 오류 목록 -->
+        <div th:if="${#fields.hasAnyErrors()}" class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <ul th:each="error : ${#fields.allErrors()}" th:text="${error}">오류</ul>
+        </div>
+
 
         <div>
             <label class="block text-sm font-medium mb-1" for="title">제목</label>
             <input type="text" id="title" name="title" th:value="${post.title}" required
-                   class="w-full border rounded px-4 py-2" />
+                   class="w-full border rounded px-4 py-2"
+                   th:class="${#fields.hasErrors('title')} ? 'w-full border rounded px-4 py-2 error-input' : 'w-full border rounded px-4 py-2'"
+                   placeholder="제목을 입력하세요 (1~200자)"/>
+
+            <!-- 필드별 오류 메시지 -->
+            <div th:if="${#fields.hasErrors('title')}" class="text-red-600 text-sm mt-1">
+                <div th:each="error : ${#fields.errors('title')}" th:text="${error}">오류</div>
+            </div>
         </div>
 
         <div>
             <label class="block text-sm font-medium mb-1" for="author">작성자</label>
             <input type="text" id="author" name="author" th:value="${post.author}" required
-                   class="w-full border rounded px-4 py-2" />
+                   class="w-full border rounded px-4 py-2"
+                   th:class="${#fields.hasErrors('author')} ? 'w-full border rounded px-4 py-2 error-input' : 'w-full border rounded px-4 py-2'"
+                   placeholder="작성자를 입력하세요 (1~200자)"/>
+
+            <!-- 필드별 오류 메시지 -->
+            <div th:if="${#fields.hasErrors('author')}" class="text-red-600 text-sm mt-1">
+                <div th:each="error : ${#fields.errors('author')}" th:text="${error}">오류</div>
+            </div>
         </div>
 
         <div>
             <label class="block text-sm font-medium mb-1" for="content">내용</label>
             <textarea id="content" name="content" rows="8" required
-                      class="w-full border rounded px-4 py-2" th:text="${post.content}"></textarea>
+                      class="w-full border rounded px-4 py-2"
+                      th:class="${#fields.hasErrors('content')} ? 'w-full border rounded px-4 py-2 error-input' : 'w-full border rounded px-4 py-2'"
+                      th:text="${post.content}"
+                      placeholder="내용을 입력하세요. 최소 5자 이상입니다.">
+            </textarea>
+
+            <!-- 필드별 오류 메시지 -->
+            <div th:if="${#fields.hasErrors('content')}" class="text-red-600 text-sm mt-1">
+                <div th:each="error : ${#fields.errors('content')}" th:text="${error}">오류</div>
+            </div>
+
         </div>
 
         <div class="flex justify-between">
