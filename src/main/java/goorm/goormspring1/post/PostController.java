@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -53,11 +54,13 @@ public class PostController {
     // 게시글 저장 → 목록으로
     @PostMapping
     public String create(@Valid @ModelAttribute("post") Post post,
-                         BindingResult bindingResult) {
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "post/write";
         }
         postService.save(post);
+        redirectAttributes.addFlashAttribute("message", "flash.post.updated");
         return "redirect:/posts";
     }
 
@@ -71,20 +74,24 @@ public class PostController {
 
     // 게시글 수정 → 상세보기로
     @PutMapping("/{seq}")
-    public String update(@PathVariable Long seq, @Valid @ModelAttribute("post") Post post, BindingResult bindingResult) {
+    public String update(@PathVariable Long seq, @Valid @ModelAttribute("post") Post post,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             post.setSeq(seq);
             return "post/write";
         }
         postService.update(seq, post);
+        redirectAttributes.addFlashAttribute("message", "flash.post.created");
         return "redirect:/posts/" + seq;
     }
 
     // 게시글 삭제 → 목록으로
     @PostMapping("/{seq}/delete")
-    public String delete(@PathVariable Long seq) {
+    public String delete(@PathVariable Long seq,
+                         RedirectAttributes redirectAttributes) {
         postService.delete(seq);
-
+        redirectAttributes.addFlashAttribute("message", "flash.post.deleted");
         return "redirect:/posts";
 
     }
