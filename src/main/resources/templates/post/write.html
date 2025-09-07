@@ -8,9 +8,11 @@
 <section class="max-w-3xl mx-auto px-4 py-12">
 
     <form th:action="${post != null and post.seq != null} ? @{/posts/{seq}(seq=${post.seq})} : @{/posts}"
-          th:method="${post.seq != null ? 'put' : 'post'}" class="bg-white p-6 rounded shadow space-y-6"
+          th:method="post" class="bg-white p-6 rounded shadow space-y-6"
           th:object="${post}">
         <h1 class="text-2xl font-bold" th:text="${post != null and post.seq != null} ? '글 수정' : '글쓰기'">글쓰기</h1>
+
+        <input type="hidden" name="_method" value="put" th:if="${post.seq != null}"/>
 
         <!-- 전체 오류 목록 -->
         <div th:if="${#fields.hasAnyErrors()}" class="bg-red-50 border border-red-200 rounded-lg p-4">

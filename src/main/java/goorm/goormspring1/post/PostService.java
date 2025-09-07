@@ -1,5 +1,6 @@
 package goorm.goormspring1.post;
 
+import goorm.goormspring1.post.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,7 @@ public class PostService {
     // SEQ로 게시글 조회
     public Post findBySeq(Long seq) {
         return postRepository.findById(seq)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. seq=" + seq));
+                .orElseThrow(() -> new PostNotFoundException(seq));
     }
 
     // 게시글 저장
