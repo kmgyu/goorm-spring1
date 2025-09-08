@@ -7,6 +7,9 @@ import goorm.goormspring1.auth.exception.DuplicateEmailException;
 import goorm.goormspring1.auth.exception.InvalidCredentialsException;
 import goorm.goormspring1.auth.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +18,21 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다"));
+    }
+
+//    // 회원가입 시 비밀번호 암호화
+//    public void signup(SignupDto signupDto) {
+//        String encodedPassword = passwordEncoder.encode(signupDto.getPassword());
+//        // User 생성 및 저장...
+//    }
 
     public User signup(SignupDTO signupDTO) {
         // 이메일 중복 검사
