@@ -5,10 +5,12 @@
 </head>
 <body>
 <section class="max-w-7xl mx-auto px-4 py-12">
+
     <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
         <h2 class="text-2xl font-bold mb-6 text-center">회원가입</h2>
 
         <form th:action="@{/auth/signup}" th:object="${signupDTO}" method="post" class="space-y-4">
+
             <!-- 이메일 -->
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">이메일</label>
