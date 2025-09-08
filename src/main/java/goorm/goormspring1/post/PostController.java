@@ -1,5 +1,7 @@
 package goorm.goormspring1.post;
 
+import goorm.goormspring1.auth.User;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -55,10 +57,15 @@ public class PostController {
     @PostMapping
     public String create(@Valid @ModelAttribute("post") Post post,
                          BindingResult bindingResult,
+//                         HttpSession session,
                          RedirectAttributes redirectAttributes) {
+        // 인터셉터 등록 시 뚫릴까?
+//        User user = (User) session.getAttribute("user");
+
         if (bindingResult.hasErrors()) {
             return "post/write";
         }
+
         postService.save(post);
         redirectAttributes.addFlashAttribute("message", "flash.post.updated");
         return "redirect:/posts";
@@ -74,7 +81,8 @@ public class PostController {
 
     // 게시글 수정 → 상세보기로
     @PutMapping("/{seq}")
-    public String update(@PathVariable Long seq, @Valid @ModelAttribute("post") Post post,
+    public String update(@PathVariable Long seq,
+                         @Valid @ModelAttribute("post") Post post,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
