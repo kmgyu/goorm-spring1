@@ -1,0 +1,55 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout (~{::title}, ~{::section})}">
+<head>
+    <title th:text="${post != null and post.seq != null} ? 'Goorm Board - 글 수정' : 'Goorm Board - 글쓰기'">Goorm Board</title>
+</head>
+<body>
+<section class="max-w-7xl mx-auto px-4 py-12">
+    <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-6 text-center">회원가입</h2>
+
+        <form th:action="@{/auth/signup}" th:object="${signupDTO}" method="post" class="space-y-4">
+            <!-- 이메일 -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">이메일</label>
+                <input type="email" id="email" th:field="*{email}"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-red-500 text-sm mt-1"></p>
+            </div>
+
+            <!-- 닉네임 -->
+            <div>
+                <label for="nickname" class="block text-sm font-medium text-gray-700">닉네임</label>
+                <input type="text" id="nickname" th:field="*{nickname}"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
+                <p th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}" class="text-red-500 text-sm mt-1"></p>
+            </div>
+
+            <!-- 비밀번호 -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">비밀번호</label>
+                <input type="password" id="password" th:field="*{password}"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-red-500 text-sm mt-1"></p>
+            </div>
+
+            <!-- 비밀번호 확인 -->
+            <div>
+                <label for="passwordConfirm" class="block text-sm font-medium text-gray-700">비밀번호 확인</label>
+                <input type="password" id="passwordConfirm" th:field="*{passwordConfirm}"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
+                <p th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}" class="text-red-500 text-sm mt-1"></p>
+            </div>
+
+            <!-- 제출 버튼 -->
+            <div>
+                <button type="submit"
+                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">
+                    회원가입
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+</html>

@@ -43,13 +43,14 @@ public class PostService {
         Post post = findBySeq(seq);
         post.setTitle(updatePost.getTitle());
         post.setContent(updatePost.getContent());
-        post.setAuthor(updatePost.getAuthor());
+//        post.setAuthor(updatePost.getAuthor());
         return post;  // @Transactional에 의해 자동으로 UPDATE 쿼리 실행
     }
 
     // 게시글 삭제
     @Transactional
     public void delete(Long seq) {
+        postRepository.findById(seq).orElseThrow(()->new PostNotFoundException(seq));
         postRepository.deleteById(seq);
     }
 }
