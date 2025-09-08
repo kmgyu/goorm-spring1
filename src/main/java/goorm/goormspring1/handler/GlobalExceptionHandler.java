@@ -1,5 +1,6 @@
-package goorm.goormspring1.post.exception;
+package goorm.goormspring1.handler;
 
+import goorm.goormspring1.post.exception.PostNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,10 @@ public class GlobalExceptionHandler {
 
         return "error/404";
     }
+
+
+
+
 
     /**
      * 기타 모든 예외 처리
