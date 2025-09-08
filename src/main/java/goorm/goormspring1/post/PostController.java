@@ -54,7 +54,7 @@ public class PostController {
     }
 
     // 게시글 저장 → 목록으로
-    @PostMapping
+    @PostMapping("/new")
     public String create(@Valid @ModelAttribute("post") Post post,
                          BindingResult bindingResult,
 //                         HttpSession session,
@@ -97,7 +97,7 @@ public class PostController {
 
     // 게시글 삭제 → 목록으로
     // TODO : ID 동일 정책 유효성 검사
-    @PostMapping("/{seq}/delete")
+    @DeleteMapping("/{seq}/delete")
     public String delete(@PathVariable Long seq,
                          RedirectAttributes redirectAttributes) {
         postService.delete(seq);
