@@ -1,5 +1,9 @@
 package goorm.goormspring1.handler;
 
+import goorm.goormspring1.auth.exception.AccessDeniedException;
+import goorm.goormspring1.auth.exception.DuplicateEmailException;
+import goorm.goormspring1.auth.exception.InvalidCredentialsException;
+import goorm.goormspring1.auth.exception.UserNotFoundException;
 import goorm.goormspring1.post.exception.PostNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +48,65 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public String handleAccessDeniedException(AccessDeniedException e, Model model) {
+        logger.warn("Access denied: {}", e.getMessage());
+        String errorMessage = messageSource.getMessage(
+                "error.access.denied",
+                null,
+                LocaleContextHolder.getLocale()
+        );
 
+        model.addAttribute("error", errorMessage);
 
+//        return "error/403";
+        return "error/404";
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public String handleDuplicateEmailException(DuplicateEmailException e, Model model) {
+        logger.warn("Duplicate denied: {}", e.getMessage());
+        String errorMessage = messageSource.getMessage(
+                // "error.duplicate.denied",
+                null,
+                null,
+                LocaleContextHolder.getLocale()
+        );
+
+        model.addAttribute("error", errorMessage);
+
+//        return "error/409";
+        return "error/404";
+    }
+    // TODO : 안쓰임. 이거 뭔지 몰라서 일단 넣어둠
+//    @ExceptionHandler(DuplicateDeniedException.class)
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public String handleInvalidCredentialsException(InvalidCredentialsException e, Model model) {
+        logger.warn("Invalid credentials: {}", e.getMessage());
+        String errorMessage = messageSource.getMessage(
+                "error.invalid.credentials",
+                null,
+                LocaleContextHolder.getLocale()
+        );
+
+        model.addAttribute("error", errorMessage);
+//        return "error/409";
+        return "error/404";
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public String handleUserNotFoundException(UserNotFoundException e, Model model) {
+        logger.warn("User not found: {}", e.getMessage());
+        String errorMessage = messageSource.getMessage(
+                "error.user.notfound",
+                null,
+                LocaleContextHolder.getLocale()
+        );
+
+        model.addAttribute("error", errorMessage);
+        return "error/404";
+    }
 
     /**
      * 기타 모든 예외 처리

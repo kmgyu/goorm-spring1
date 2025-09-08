@@ -80,6 +80,7 @@ public class PostController {
     }
 
     // 게시글 수정 → 상세보기로
+    // TODO : ID 동일 정책 유효성 검사
     @PutMapping("/{seq}")
     public String update(@PathVariable Long seq,
                          @Valid @ModelAttribute("post") Post post,
@@ -95,6 +96,7 @@ public class PostController {
     }
 
     // 게시글 삭제 → 목록으로
+    // TODO : ID 동일 정책 유효성 검사
     @PostMapping("/{seq}/delete")
     public String delete(@PathVariable Long seq,
                          RedirectAttributes redirectAttributes) {
