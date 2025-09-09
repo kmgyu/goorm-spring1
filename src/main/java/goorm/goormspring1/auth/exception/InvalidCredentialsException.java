@@ -1,7 +1,14 @@
 package goorm.goormspring1.auth.exception;
 
 public class InvalidCredentialsException extends RuntimeException {
-    public InvalidCredentialsException(String message) {
-        super("Invalid Credential" + message);
+    private final String email;
+
+    public InvalidCredentialsException(String email) {
+        super();
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }
