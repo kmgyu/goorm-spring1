@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -58,6 +59,7 @@ public class PostController {
     public String create(@Valid @ModelAttribute("post") Post post,
                          BindingResult bindingResult,
 //                         HttpSession session,
+                         @AuthenticationPrincipal User user,
                          RedirectAttributes redirectAttributes) {
         // 인터셉터 등록 시 뚫릴까?
 //        User user = (User) session.getAttribute("user");
@@ -65,6 +67,8 @@ public class PostController {
         if (bindingResult.hasErrors()) {
             return "post/write";
         }
+
+        post.setAuthor(user);
 
         postService.save(post);
         redirectAttributes.addFlashAttribute("message", "flash.post.updated");
