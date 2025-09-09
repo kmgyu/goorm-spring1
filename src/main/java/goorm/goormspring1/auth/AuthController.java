@@ -53,48 +53,11 @@ public class AuthController {
         }
     }
 
+    // spring security가 login 진행 과정 담당
     @GetMapping("/login")
     public String loginForm(Model model) {
         model.addAttribute("loginDTO", new LoginDTO());
         return "auth/login";
-    }
-
-    @PostMapping("/login")
-    public String login(@Valid @ModelAttribute LoginDTO loginDTO,
-                        BindingResult result,
-                        HttpSession session,
-                        RedirectAttributes redirectAttributes,
-                        Locale locale) {
-
-        if (result.hasErrors()) {
-            return "auth/login";
-        }
-
-        try {
-            User user = userService.authenticate(loginDTO);
-
-            // 세션에 사용자 정보 저장
-            session.setAttribute("user", user);
-
-            String message = messageSource.getMessage("flash.login.success", null, "로그인되었습니다.", locale);
-            redirectAttributes.addFlashAttribute("successMessage", message);
-            return "redirect:/";
-        } catch (Exception e) {
-            result.reject("login.failed", e.getMessage());
-            return "auth/login";
-        }
-    }
-
-    @PostMapping("/logout")
-    public String logout(HttpSession session,
-                         RedirectAttributes redirectAttributes,
-                         Locale locale) {
-
-        session.invalidate();
-
-        String message = messageSource.getMessage("flash.logout.success", null, "로그아웃되었습니다.", locale);
-        redirectAttributes.addFlashAttribute("successMessage", message);
-        return "redirect:/";
     }
 
     @GetMapping("/profile")
