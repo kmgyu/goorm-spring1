@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:replace="~{layout/base :: layout (~{::title}, ~{::section})}">
 <head>
     <title>Goorm Board</title>
@@ -30,16 +31,20 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                     <a th:href="@{/posts/{seq}(seq=${post.seq})}" class="text-blue-600 hover:underline" th:text="${post.title}">제목</a>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap" th:text="${post.author}">작성자</td>
+                <td class="px-6 py-4 whitespace-nowrap" th:text="${post.author.nickname}">작성자</td>
                 <td class="px-6 py-4 whitespace-nowrap"
                     th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}">2025-01-01</td>
                 <td class="px-6 py-4 whitespace-nowrap space-x-1">
-                    <a th:href="@{/posts/{seq}/edit(seq=${post.seq})}"
-                       class="px-2 py-1 text-xs bg-blue-100 text-blue-600 rounded hover:bg-blue-200">수정</a>
-                    <form th:action="@{/posts/{seq}/delete(seq=${post.seq})}" method="post" style="display:inline;">
-                        <button type="submit" class="px-2 py-1 text-xs bg-red-100 text-red-600 rounded hover:bg-red-200"
-                                onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
-                    </form>
+                    <div sec:authorize="isAuthenticated()" th:if="${#authentication.name == post.author.email}"  class="space-x-2">
+                        <a th:href="@{/posts/{seq}/edit(seq=${post.seq})}"
+                           class="px-2 py-1 text-xs bg-blue-100 text-blue-600 rounded hover:bg-blue-200">수정</a>
+                        <form th:action="@{/posts/{seq}/delete(seq=${post.seq})}" method="post" style="display:inline;">
+                            <input type="hidden" name="_method" value="delete"/>
+
+                            <button type="submit" class="px-2 py-1 text-xs bg-red-100 text-red-600 rounded hover:bg-red-200"
+                                    onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
 

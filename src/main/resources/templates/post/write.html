@@ -7,7 +7,7 @@
 <body>
 <section class="max-w-3xl mx-auto px-4 py-12">
 
-    <form th:action="${post != null and post.seq != null} ? @{/posts/{seq}(seq=${post.seq})} : @{/posts}"
+    <form th:action="${post != null and post.seq != null} ? @{/posts/{seq}(seq=${post.seq})} : @{/posts/new}"
           th:method="post" class="bg-white p-6 rounded shadow space-y-6"
           th:object="${post}">
         <h1 class="text-2xl font-bold" th:text="${post != null and post.seq != null} ? '글 수정' : '글쓰기'">글쓰기</h1>
@@ -35,6 +35,7 @@
 
         <div>
             <label class="block text-sm font-medium mb-1" for="author">작성자</label>
+<!--            <div th:if="${post.author?}" th:value="${post.author.nickname}" >작성자 명</div>-->
             <input type="text" id="author" name="author" th:value="${post.author}" required
                    class="w-full border rounded px-4 py-2"
                    th:class="${#fields.hasErrors('author')} ? 'w-full border rounded px-4 py-2 error-input' : 'w-full border rounded px-4 py-2'"

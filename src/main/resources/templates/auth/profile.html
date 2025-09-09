@@ -1,59 +1,89 @@
+<!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout (~{::title}, ~{::section})}">
+
 <head>
-    <title th:text="${post != null and post.seq != null} ? 'Goorm Board - 글 수정' : 'Goorm Board - 글쓰기'">Goorm Board</title>
+    <title>프로필 - goorm board</title>
 </head>
+
 <body>
-<section class="max-w-7xl mx-auto px-4 py-12">
-    <h2 class="text-2xl font-bold mb-6 text-center">프로필</h2>
+<section class="max-w-2xl mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow p-8">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">프로필 관리</h1>
 
-    <!-- 현재 사용자 정보 표시 -->
-    <div class="mb-6">
-        <p><strong>이메일:</strong> <span th:text="${currentUser.email}"></span></p>
-    </div>
-
-    <form th:action="@{/auth/profile}" th:object="${profileUpdateDTO}" method="post" class="space-y-4">
-
-        <!-- 닉네임 -->
-        <div>
-            <label for="nickname" class="block text-sm font-medium text-gray-700">닉네임</label>
-            <input type="text" id="nickname" th:field="*{nickname}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
-            <p th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}" class="text-red-500 text-sm mt-1"></p>
+        <!-- Current Info -->
+        <div class="mb-8 p-6 bg-gray-50 rounded-lg">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">현재 정보</h2>
+            <div class="space-y-2">
+                <p class="text-gray-600"><strong>이메일:</strong> <span th:text="${currentUser.email}">user@example.com</span></p>
+                <p class="text-gray-600"><strong>닉네임:</strong> <span th:text="${currentUser.nickname}">사용자</span></p>
+                <p class="text-gray-600"><strong>가입일:</strong> <span th:text="${#temporals.format(currentUser.createdAt, 'yyyy-MM-dd')}">2024-01-01</span></p>
+            </div>
         </div>
 
-        <!-- 현재 비밀번호 -->
-        <div>
-            <label for="currentPassword" class="block text-sm font-medium text-gray-700">현재 비밀번호</label>
-            <input type="password" id="currentPassword" th:field="*{currentPassword}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
-            <p th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}" class="text-red-500 text-sm mt-1"></p>
-        </div>
+        <form th:action="@{/auth/profile}" th:object="${profileUpdateDTO}" method="post" class="space-y-6">
+            <!-- Global Error Messages -->
+            <div th:if="${#fields.hasGlobalErrors()}" class="mb-4">
+                <div th:each="error : ${#fields.globalErrors()}"
+                     class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-2">
+                    <span th:text="${error}"></span>
+                </div>
+            </div>
 
-        <!-- 새 비밀번호 -->
-        <div>
-            <label for="newPassword" class="block text-sm font-medium text-gray-700">새 비밀번호 (선택)</label>
-            <input type="password" id="newPassword" th:field="*{newPassword}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
-            <p th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}" class="text-red-500 text-sm mt-1"></p>
-        </div>
+            <!-- Nickname -->
+            <div>
+                <label for="nickname" class="block text-sm font-medium text-gray-700 mb-2">닉네임</label>
+                <input type="text" id="nickname" th:field="*{nickname}"
+                       class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       th:classappend="${#fields.hasErrors('nickname')} ? 'border-red-500' : 'border-gray-300'"
+                       placeholder="새 닉네임을 입력하세요">
+                <div th:if="${#fields.hasErrors('nickname')}" class="mt-1 text-sm text-red-600">
+                    <span th:errors="*{nickname}"></span>
+                </div>
+            </div>
 
-        <!-- 새 비밀번호 확인 -->
-        <div>
-            <label for="newPasswordConfirm" class="block text-sm font-medium text-gray-700">새 비밀번호 확인</label>
-            <input type="password" id="newPasswordConfirm" th:field="*{newPasswordConfirm}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
-            <p th:if="${#fields.hasErrors('newPasswordConfirm')}" th:errors="*{newPasswordConfirm}" class="text-red-500 text-sm mt-1"></p>
-        </div>
+            <!-- Current Password -->
+            <div>
+                <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-2">현재 비밀번호</label>
+                <input type="password" id="currentPassword" th:field="*{currentPassword}"
+                       class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       th:classappend="${#fields.hasErrors('currentPassword')} ? 'border-red-500' : 'border-gray-300'"
+                       placeholder="현재 비밀번호를 입력하세요">
+                <div th:if="${#fields.hasErrors('currentPassword')}" class="mt-1 text-sm text-red-600">
+                    <span th:errors="*{currentPassword}"></span>
+                </div>
+            </div>
 
-        <!-- 저장 버튼 -->
-        <div>
+            <!-- New Password -->
+            <div>
+                <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-2">새 비밀번호 (선택사항)</label>
+                <input type="password" id="newPassword" th:field="*{newPassword}"
+                       class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       th:classappend="${#fields.hasErrors('newPassword')} ? 'border-red-500' : 'border-gray-300'"
+                       placeholder="새 비밀번호를 입력하세요 (변경하지 않으려면 비워두세요)">
+                <div th:if="${#fields.hasErrors('newPassword')}" class="mt-1 text-sm text-red-600">
+                    <span th:errors="*{newPassword}"></span>
+                </div>
+            </div>
+
+            <!-- New Password Confirm -->
+            <div>
+                <label for="newPasswordConfirm" class="block text-sm font-medium text-gray-700 mb-2">새 비밀번호 확인</label>
+                <input type="password" id="newPasswordConfirm" th:field="*{newPasswordConfirm}"
+                       class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       th:classappend="${#fields.hasErrors('newPasswordConfirm')} ? 'border-red-500' : 'border-gray-300'"
+                       placeholder="새 비밀번호를 다시 입력하세요">
+                <div th:if="${#fields.hasErrors('newPasswordConfirm')}" class="mt-1 text-sm text-red-600">
+                    <span th:errors="*{newPasswordConfirm}"></span>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
             <button type="submit"
-                    class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition">
-                저장하기
+                    class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 font-medium transition duration-200">
+                프로필 수정
             </button>
-        </div>
-    </form>
+        </form>
     </div>
 </section>
 </body>
