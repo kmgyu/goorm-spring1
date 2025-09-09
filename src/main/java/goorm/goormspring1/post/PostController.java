@@ -100,7 +100,6 @@ public class PostController {
     }
 
     // 게시글 삭제 → 목록으로
-    // TODO : ID 동일 정책 유효성 검사
     @DeleteMapping("/{seq}/delete")
     public String delete(@PathVariable Long seq,
                          RedirectAttributes redirectAttributes) {

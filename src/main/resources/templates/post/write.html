@@ -33,18 +33,12 @@
             </div>
         </div>
 
-        <div>
-            <label class="block text-sm font-medium mb-1" for="author">작성자</label>
-<!--            <div th:if="${post.author?}" th:value="${post.author.nickname}" >작성자 명</div>-->
-            <input type="text" id="author" name="author" th:value="${post.author}" required
-                   class="w-full border rounded px-4 py-2"
-                   th:class="${#fields.hasErrors('author')} ? 'w-full border rounded px-4 py-2 error-input' : 'w-full border rounded px-4 py-2'"
-                   placeholder="작성자를 입력하세요 (1~200자)"/>
-
-            <!-- 필드별 오류 메시지 -->
-            <div th:if="${#fields.hasErrors('author')}" class="text-red-600 text-sm mt-1">
-                <div th:each="error : ${#fields.errors('author')}" th:text="${error}">오류</div>
-            </div>
+        <!-- 수정 시에만 작성자 정보 표시 (수정 불가) -->
+        <div th:if="${post.seq != null}">
+            <label class="block text-sm font-medium mb-1">작성자</label>
+            <input type="text" th:value="${post.author.nickname}"
+                   class="w-full border rounded px-4 py-2 bg-gray-100" readonly />
+            <p class="text-xs text-gray-500 mt-1">작성자는 수정할 수 없습니다.</p>
         </div>
 
         <div>

@@ -26,7 +26,7 @@
                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">수정</a>
             <form th:action="@{/posts/{seq}/delete(seq=${post.seq})}" method="post" style="display:inline;">
                 <input type="hidden" name="_method" value="delete"/>
-
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
                         onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
             </form>

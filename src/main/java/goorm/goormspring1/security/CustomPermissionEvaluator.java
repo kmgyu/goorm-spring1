@@ -8,69 +8,66 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
-@Configuration
+@Component
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
 //@EnableAspectJAutoProxy(proxyTargetClass = true)
 @RequiredArgsConstructor
 public class CustomPermissionEvaluator implements PermissionEvaluator {
+
     private final PostRepository postRepository;
 
+    // hasPermission(principal, domainObject, permission)
     @Override
-    public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-        if (authentication == null || !(permission instanceof String)) {
-            return false;
-        }
+    public boolean hasPermission(Authentication auth, Object targetDomainObject, Object permission) {
+        if (auth == null || targetDomainObject == null || permission == null) return false;
 
-        String permissionString = (String) permission;
+        String perm = String.valueOf(permission).toLowerCase();
 
-        if (targetDomainObject instanceof Post) {
-            Post post = (Post) targetDomainObject;
-            return hasPostPermission(authentication, post, permissionString);
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
-        if (authentication == null || targetId == null) {
-            return false;
-        }
-
-        if ("Post".equals(targetType) && "WRITE".equals(permission)) {
-            return hasPostWritePermission(authentication, (Long) targetId);
+        if (targetDomainObject instanceof Post post) {
+            return checkPost(auth, post, perm);
         }
         return false;
     }
 
-    private boolean hasPostPermission(Authentication authentication, Post post, String permission) {
-        String userEmail = authentication.getName();
+    // hasPermission(principal, targetId, targetType, permission)
+    @Override
+    public boolean hasPermission(Authentication auth, Serializable targetId, String targetType, Object permission) {
+        if (auth == null || targetId == null || targetType == null || permission == null) return false;
 
-        switch (permission) {
-            case "WRITE":
-            case "DELETE":
-                return post.getAuthor().getEmail().equals(userEmail);
-            case "READ":
-                return true; // 모든 사용자가 읽기 가능
-            default:
-                return false;
-        }
-    }
+        String type = targetType.toLowerCase();
+        String perm = String.valueOf(permission).toLowerCase();
 
-    private boolean hasPostWritePermission(Authentication authentication, Long postId) {
+        if (!"post".equals(type)) return false;
+
+        Long id;
         try {
-            Post post = postRepository.findById(postId).orElse(null);
-            if (post == null) {
-                return false;
-            }
-
-            String userEmail = authentication.getName();
-            return post.getAuthor().getEmail().equals(userEmail);
-        } catch (Exception e) {
+            id = (targetId instanceof Long) ? (Long) targetId : Long.valueOf(targetId.toString());
+        } catch (NumberFormatException e) {
             return false;
         }
+
+        Post post = postRepository.findById(id).orElse(null);
+        if (post == null) return false;
+
+        return checkPost(auth, post, perm);
+    }
+
+    private boolean checkPost(Authentication auth, Post post, String perm) {
+        // 현재 사용자 식별 (커스텀 Principal이면 그에 맞게 추출)
+        String currentEmail = auth.getName();
+
+        // 작성자/이메일 널 방어
+        String authorEmail = (post.getAuthor() != null) ? post.getAuthor().getEmail() : null;
+
+        // READ는 모두 허용, WRITE/DELETE는 본인만
+        return switch (perm) {
+            case "read" -> true;
+            case "write", "delete" -> authorEmail != null && authorEmail.equals(currentEmail);
+            default -> false;
+        };
     }
 }
