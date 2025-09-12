@@ -4,6 +4,7 @@ import goorm.goormspring1.post.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,13 @@ public class PostService {
                 .orElseThrow(() -> new PostNotFoundException(seq));
     }
 
+    // 수정용 게시글 조회 (권한 체크 포함)
+    @PreAuthorize("hasPermission(#seq, 'Post', 'WRITE')")
+    public Post findForEdit(Long seq) {
+        return postRepository.findById(seq)
+                .orElseThrow(() -> new PostNotFoundException(seq));
+    }
+
     // 게시글 저장
     @Transactional  // 쓰기 작업은 별도 트랜잭션
     public Post save(Post post) {
@@ -39,16 +47,19 @@ public class PostService {
 
     // 게시글 수정
     @Transactional
+    @PreAuthorize("hasPermission(#seq, 'Post', 'WRITE')")
     public Post update(Long seq, Post updatePost) {
         Post post = findBySeq(seq);
         post.setTitle(updatePost.getTitle());
         post.setContent(updatePost.getContent());
 //        post.setAuthor(updatePost.getAuthor());
         return post;  // @Transactional에 의해 자동으로 UPDATE 쿼리 실행
+        // Dirty Checking.
     }
 
     // 게시글 삭제
     @Transactional
+    @PreAuthorize("hasPermission(#seq, 'Post', 'DELETE')")
     public void delete(Long seq) {
         postRepository.findById(seq).orElseThrow(()->new PostNotFoundException(seq));
         postRepository.deleteById(seq);
